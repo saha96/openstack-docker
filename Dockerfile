@@ -21,9 +21,9 @@ RUN echo "=================== create stack user ===================" && \
 RUN echo "=================== get code from github ===================" && \
     sudo -u stack -i && \
     export GIT_SSL_NO_VERIFY=1 && \
-    git clone https://opendev.org/openstack/devstack && \
-    cd devstack && \
-    git checkout stable/yoga
+    git clone https://github.com/saha96/devstack-docker.git && \
+    mv devstack-docker/ devstack/ && \
+    cd devstack
 
 COPY local.conf /opt/stack/
 
@@ -33,11 +33,22 @@ RUN echo "=================== run stack.sh ===================" && \
     sed -i "s/OVS_RUNDIR=\$OVS_PREFIX\/var\/run\/openvswitch/OVS_RUNDIR=\$OVS_PREFIX\/var\/run\/ovn/g" lib/neutron_plugins/ovn_agent && \
     mkdir ~/openstack && \
     sudo apt install python3-distutils && \
-    sudo sysctl -w net.ipv4.ip_nonlocal_bind=1 && \
     wget --progress=dot:giga -c http://download.cirros-cloud.net/0.5.2/cirros-0.5.2-x86_64-disk.img -O /opt/stack/devstack/files/cirros-0.5.2-x86_64-disk.im && \
     ./stack.sh 
 
-RUN echo "=================== restart stack.sh ===================" && \
+RUN echo "=================== restart stack.sh (mysql crash) ===================" && \
+    sudo -u stack -i && \
+    cd devstack && \
+    sudo rm -rf /var/run/ovn/ovn && \
+    ./clean.sh && \
+    ./unstack.sh && \
+    sudo mkdir /etc/mysql && \
+    sudo -u stack -i && \
+    sudo ln -s ~/.my.cnf /etc/mysql/my.cnf && \
+    cd devstack/ && \
+    ./stack.sh 
+
+RUN echo "=================== restart stack.sh (ovn crash) ===================" && \
     sudo -u stack -i && \
     cd devstack && \
     sudo rm -rf /var/run/ovn/ovn && \
