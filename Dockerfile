@@ -26,11 +26,11 @@ RUN echo "=================== get code from github ===================" && \
     mv devstack-docker/ devstack/ && \
     cd devstack
 
-COPY local.conf /opt/stack/
+COPY local.conf /opt/stack/devstack/
 
 # RUN echo "=================== offline installation ===================" && \
 
-RUN echo "=================== online installation ===================" && \
+RUN echo "=================== online installation (part1) ===================" && \
     su - stack && \
     cd devstack && \
     mkdir ~/openstack && \
@@ -43,6 +43,8 @@ RUN echo "=================== online installation ===================" && \
     git clone https://opendev.org/openstack/nova.git /opt/stack/openstack/nova --branch stable/yoga && \
     git clone https://opendev.org/openstack/placement.git /opt/stack/openstack/placement --branch stable/yoga && \
     git clone https://opendev.org/openstack/horizon.git /opt/stack/openstack/horizon --branch stable/yoga && \
+    
+RUN echo "=================== online installation (part2) ===================" && \
     # git clone from github
     git clone https://github.com/novnc/novnc.git /opt/stack/openstack/novnc --branch v1.3.0 && \
     # install deb packages
@@ -56,6 +58,8 @@ RUN echo "=================== online installation ===================" && \
     iputils-arping iputils-ping postgresql-server-dev-all python3-mysqldb sqlite3 sudo vlan pcp rabbitmq-server mysql-server uwsgi uwsgi-plugin-python3 \
     libapache2-mod-proxy-uwsgi targetcli-fb fakeroot make openvswitch-switch ovn-central ovn-controller-vtep ovn-host qemu-system libvirt-clients \
     libvirt-daemon-system libvirt-dev python3-libvirt apache2 apparmor-utils libapache2-mod-wsgi-py3 vim  && \
+    
+RUN echo "=================== online installation (part3) ===================" && \
     # install rpm packages
     sudo -H LC_ALL=en_US.UTF-8 SETUPTOOLS_USE_DISTUTILS=stdlib http_proxy= https_proxy= no_proxy= PIP_FIND_LINKS= SETUPTOOLS_SYS_PATH_TECHNIQUE=rewrite python3.8 -m pip install -c /opt/stack/openstack/requirements/upper-constraints.txt 'setuptools!=24.0.0,!=34.0.0,!=34.0.1,!=34.0.2,!=34.0.3,!=34.1.0,!=34.1.1,!=34.2.0,!=34.3.0,!=34.3.1,!=34.3.2,!=36.2.0,!=48.0.0,!=49.0.0' && \
     sudo -H LC_ALL=en_US.UTF-8 SETUPTOOLS_USE_DISTUTILS=stdlib http_proxy= https_proxy= no_proxy= PIP_FIND_LINKS= SETUPTOOLS_SYS_PATH_TECHNIQUE=rewrite python3.8 -m pip install -c /opt/stack/openstack/requirements/upper-constraints.txt -U pbr && \
@@ -82,33 +86,33 @@ RUN echo "=================== online installation ===================" && \
 RUN echo "=================== run stack.sh ===================" && \
     su - stack && \
     cd devstack && \
-    ./stack.sh 
+    ./stack-init.sh 
 
-RUN echo "=================== restart stack.sh (mysql crash) ===================" && \
-    su - stack && \
-    cd devstack && \
-    sudo rm -rf /var/run/ovn/ovn && \
-    ./clean.sh && \
-    ./unstack.sh && \
-    sudo mkdir /etc/mysql && \
-    sudo -u stack -i && \
-    sudo ln -s ~/.my.cnf /etc/mysql/my.cnf && \
-    cd devstack/ && \
-    ./stack.sh 
+# RUN echo "=================== restart stack.sh (mysql crash) ===================" && \
+#     su - stack && \
+#     cd devstack && \
+#     sudo rm -rf /var/run/ovn/ovn && \
+#     ./clean.sh && \
+#     ./unstack.sh && \
+#     sudo mkdir /etc/mysql && \
+#     sudo -u stack -i && \
+#     sudo ln -s ~/.my.cnf /etc/mysql/my.cnf && \
+#     cd devstack/ && \
+#     ./stack.sh 
 
-RUN echo "=================== restart stack.sh (ovn crash) ===================" && \
-    su - stack && \
-    cd devstack && \
-    sudo rm -rf /var/run/ovn/ovn && \
-    ./clean.sh && \
-    ./unstack.sh && \
-    sudo mkdir /etc/mysql && \
-    sudo -u stack -i && \
-    sudo ln -s ~/.my.cnf /etc/mysql/my.cnf && \
-    cd devstack/ && \
-    ./stack.sh 
+# RUN echo "=================== restart stack.sh (ovn crash) ===================" && \
+#     su - stack && \
+#     cd devstack && \
+#     sudo rm -rf /var/run/ovn/ovn && \
+#     ./clean.sh && \
+#     ./unstack.sh && \
+#     sudo mkdir /etc/mysql && \
+#     sudo -u stack -i && \
+#     sudo ln -s ~/.my.cnf /etc/mysql/my.cnf && \
+#     cd devstack/ && \
+#     ./stack.sh 
 
-RUN echo "=================== add configuration files ===================" && \
+# RUN echo "=================== add configuration files ===================" && \
 COPY configurations /
 
 # RUN rm -rf /opt/src/
