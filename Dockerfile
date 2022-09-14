@@ -1,5 +1,5 @@
 # useless packages should be removed, and packages should be installed with pip instead of apt
-FROM ubuntu:20.04
+FROM jrei/systemd-ubuntu:20.04
 # MAINTAINER amir <sahahmadi96@gmail.com>
 
 # COPY . /opt/src/
