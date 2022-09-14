@@ -42,7 +42,7 @@ RUN echo "=================== online installation (part1) ===================" &
     git clone https://opendev.org/openstack/neutron.git /opt/stack/openstack/neutron --branch stable/yoga && \
     git clone https://opendev.org/openstack/nova.git /opt/stack/openstack/nova --branch stable/yoga && \
     git clone https://opendev.org/openstack/placement.git /opt/stack/openstack/placement --branch stable/yoga && \
-    git clone https://opendev.org/openstack/horizon.git /opt/stack/openstack/horizon --branch stable/yoga && \
+    git clone https://opendev.org/openstack/horizon.git /opt/stack/openstack/horizon --branch stable/yoga
     
 RUN echo "=================== online installation (part2) ===================" && \
     # git clone from github
@@ -57,7 +57,7 @@ RUN echo "=================== online installation (part2) ===================" &
     open-iscsi qemu-utils sg3-utils sysfsutils lvm2 qemu-utils thin-provisioning-tools acl dnsmasq-base dnsmasq-utils ebtables haproxy iptables \
     iputils-arping iputils-ping postgresql-server-dev-all python3-mysqldb sqlite3 sudo vlan pcp rabbitmq-server mysql-server uwsgi uwsgi-plugin-python3 \
     libapache2-mod-proxy-uwsgi targetcli-fb fakeroot make openvswitch-switch ovn-central ovn-controller-vtep ovn-host qemu-system libvirt-clients \
-    libvirt-daemon-system libvirt-dev python3-libvirt apache2 apparmor-utils libapache2-mod-wsgi-py3 vim  && \
+    libvirt-daemon-system libvirt-dev python3-libvirt apache2 apparmor-utils libapache2-mod-wsgi-py3 vim
     
 RUN echo "=================== online installation (part3) ===================" && \
     # install rpm packages
