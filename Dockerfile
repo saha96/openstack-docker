@@ -4,13 +4,12 @@ FROM ubuntu:20.04
 
 # COPY . /opt/src/
 
-# ADD openstackdebs /usr/local/openstackdebs
+ADD openstackdebs /usr/local/openstackdebs
 
-# RUN echo "=================== add local apt source ===================" && \
-#     echo 'deb [trusted=yes] file:/usr/local/openstackdebs ./' >> /etc/apt/sources && apt-get update
+RUN echo "=================== add local apt source ===================" && \
+    echo 'deb [trusted=yes] file:/usr/local/openstackdebs ./' >> /etc/apt/sources && apt-get update
 
 RUN echo "=================== installing packages ===================" && \
-    apt-get update && \
     DEBIAN_FRONTEND=noninteractive http_proxy= https_proxy= no_proxy= \
         apt-get --option Dpkg::Options::=--force-confold --assume-yes install \
         openssh-server git python3-distutils sudo
@@ -78,7 +77,7 @@ RUN echo "=================== online installation ===================" && \
     sudo -H LC_ALL=en_US.UTF-8 SETUPTOOLS_USE_DISTUTILS=stdlib http_proxy= https_proxy= no_proxy= PIP_FIND_LINKS= SETUPTOOLS_SYS_PATH_TECHNIQUE=rewrite python3.8 -m pip install -c /opt/stack/openstack/requirements/upper-constraints.txt -e /opt/stack/openstack/horizon && \
     sudo -H LC_ALL=en_US.UTF-8 SETUPTOOLS_USE_DISTUTILS=stdlib http_proxy= https_proxy= no_proxy= PIP_FIND_LINKS= SETUPTOOLS_SYS_PATH_TECHNIQUE=rewrite python3.8 -m pip install -c /opt/stack/openstack/requirements/upper-constraints.txt -U os-testr && \
     sudo -H LC_ALL=en_US.UTF-8 SETUPTOOLS_USE_DISTUTILS=stdlib http_proxy= https_proxy= no_proxy= PIP_FIND_LINKS= SETUPTOOLS_SYS_PATH_TECHNIQUE=rewrite python3.8 -m pip install -c /opt/stack/openstack/requirements/upper-constraints.txt 'tox!=2.8.0' && \
-    sudo -H LC_ALL=en_US.UTF-8 SETUPTOOLS_USE_DISTUTILS=stdlib http_proxy= https_proxy= no_proxy= PIP_FIND_LINKS= SETUPTOOLS_SYS_PATH_TECHNIQUE=rewrite python3.8 -m pip install -c /opt/stack/openstack/requirements/upper-constraints.txt testrepository && \
+    sudo -H LC_ALL=en_US.UTF-8 SETUPTOOLS_USE_DISTUTILS=stdlib http_proxy= https_proxy= no_proxy= PIP_FIND_LINKS= SETUPTOOLS_SYS_PATH_TECHNIQUE=rewrite python3.8 -m pip install -c /opt/stack/openstack/requirements/upper-constraints.txt testrepository
 
 RUN echo "=================== run stack.sh ===================" && \
     su - stack && \
